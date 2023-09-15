@@ -5,11 +5,17 @@ canvas.height = window.innerHeight;
 let pencilColor = document.querySelectorAll(".pencil-color");
 let pencilWidthElem = document.querySelector(".pencil-width");
 let eraserWidthElem = document.querySelector(".eraser-width");
+let download = document.querySelector(".download");
+let redo = document.querySelector(".redo");
+let undo = document.querySelector(".undo");
 
 let penColor = "red";
 let eraserColor = "white";
 let penWidth = pencilWidthElem.value;
 let eraserWidth = eraserWidthElem.value;
+
+let undoRedoTracker = [];
+let track = 0;
 
 let mouseDown = false;
 
@@ -36,7 +42,41 @@ canvas.addEventListener("mousemove", (e) => {
 });
 canvas.addEventListener("mouseup", (e) => {
   mouseDown = false;
+  let url = canvas.toDataURL();
+  undoRedoTracker.push(url);
+  track = undoRedoTracker.length - 1;
 });
+
+undo.addEventListener("click", (e) => {
+  if (track > 0) track--;
+
+  let trackObj = {
+    trackValue: track,
+    undoRedoTracker,
+  };
+  undoRedoCanvas(trackObj);
+});
+redo.addEventListener("click", (e) => {
+  if (track < undoRedoTracker.length - 1) track++;
+
+  let trackObj = {
+    trackValue: track,
+    undoRedoTracker,
+  };
+  undoRedoCanvas(trackObj);
+});
+
+function undoRedoCanvas(trackObj) {
+  track = trackObj.trackValue;
+  undoRedoTracker = trackObj.undoRedoTracker;
+  let url = undoRedoTracker[track];
+  let img = new Image();
+
+  img.src = url;
+  img.onload = (e) => {
+    tool.drawImage(img, 0, 0, canvas.width, canvas.height);
+  };
+}
 
 function beginPath(strokeObj) {
   tool.beginPath();
@@ -73,4 +113,12 @@ eraser.addEventListener("click", (e) => {
     tool.strokeStyle = penColor;
     tool.lineWidth = penWidth;
   }
+});
+
+download.addEventListener("click", (e) => {
+  let url = canvas.toDataURL();
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "board.jpg";
+  a.click();
 });
