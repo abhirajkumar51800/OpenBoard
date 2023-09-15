@@ -30,6 +30,8 @@ canvas.addEventListener("mousemove", (e) => {
     drawStroke({
       x: e.clientX,
       y: e.clientY,
+      color: eraserFlag ? eraserColor : penColor,
+      width: eraserFlag ? eraserWidth : penWidth,
     });
 });
 canvas.addEventListener("mouseup", (e) => {
@@ -41,6 +43,8 @@ function beginPath(strokeObj) {
   tool.moveTo(strokeObj.x, strokeObj.y);
 }
 function drawStroke(strokeObj) {
+  tool.strokeStyle = strokeObj.color;
+  tool.lineWidth = strokeObj.width;
   tool.lineTo(strokeObj.x, strokeObj.y);
   tool.stroke();
 }
@@ -48,8 +52,8 @@ function drawStroke(strokeObj) {
 pencilColor.forEach((colorElem) => {
   colorElem.addEventListener("click", (e) => {
     let color = colorElem.classList[0];
-    pencilColor = color;
-    tool.strokeStyle = pencilColor;
+    penColor = color;
+    tool.strokeStyle = penColor;
   });
 });
 
@@ -58,8 +62,8 @@ pencilWidthElem.addEventListener("change", (e) => {
   tool.lineWidth = penWidth;
 });
 eraserWidthElem.addEventListener("change", (e) => {
-  penWidth = eraserWidthElem.value;
-  tool.lineWidth = penWidth;
+  eraserWidth = eraserWidthElem.value;
+  tool.lineWidth = eraserWidth;
 });
 eraser.addEventListener("click", (e) => {
   if (eraserFlag) {
