@@ -14,4 +14,15 @@ let io = socket(server);
 
 io.on("connection", (socket) => {
   console.log("made socket connection");
+
+  socket.on("beginPath", (data) => {
+    io.sockets.emit("beginPath", data);
+  });
+  socket.on("drawStroke", (data) => {
+    io.sockets.emit("drawStroke", data);
+  });
+
+  socket.on("redoUndo", (data) => {
+    io.sockets.emit("redoUndo", data);
+  });
 });
