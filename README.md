@@ -1,1 +1,1 @@
-# OpenBoard
+# WhiteBoard
